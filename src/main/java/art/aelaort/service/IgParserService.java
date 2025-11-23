@@ -14,7 +14,7 @@ import java.util.List;
 public class IgParserService {
 	public List<MediaUrl> parseListMediaUrl(AccountPost accountPost) {
 		if (accountPost.mediaType() == 8) {
-			return accountPost.posts().stream().map(this::parseSingleMediaUrl).toList();
+			return accountPost.postMedias().stream().map(this::parseSingleMediaUrl).toList();
 		}
 		return List.of(parseSingleMediaUrl(accountPost));
 	}

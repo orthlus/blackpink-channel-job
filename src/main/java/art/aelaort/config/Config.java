@@ -1,4 +1,4 @@
-package art.aelaort;
+package art.aelaort.config;
 
 import art.aelaort.telegram.client.TelegramClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +14,14 @@ import java.net.Proxy;
 import java.net.URI;
 import java.time.Duration;
 
+import static art.aelaort.telegram.TelegramBots.telegramUrlSupplier;
+
 @Configuration
 public class Config {
 	@Value("${proxy-url}")
 	private URI proxyUrl;
+	@Value("${telegram.api.url}")
+	private String telegramUrl;
 
 	private void proxyCustomizer(RestTemplate restTemplate) {
 		String host = proxyUrl.getHost();
@@ -47,6 +51,7 @@ public class Config {
 	public TelegramClient telegramClient(@Value("${telegram.bot.token}") String token) {
 		return TelegramClientBuilder.builder()
 				.token(token)
+				.telegramUrlSupplier(telegramUrlSupplier(telegramUrl))
 				.build();
 	}
 }

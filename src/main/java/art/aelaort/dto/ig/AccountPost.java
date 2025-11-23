@@ -20,7 +20,7 @@ public record AccountPost(
 		@JsonProperty("video_url")
 		String singleVideoUrl,
 		@JsonProperty("resources") // media_type = 8
-		List<AccountPost> posts,
+		List<AccountPost> postMedias,
 		@JsonProperty("caption_text")
 		String text
 ) {
