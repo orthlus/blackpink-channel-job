@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class IGParserService {
+public class IgParserService {
 	public List<MediaUrl> parseListMediaUrl(AccountPost accountPost) {
 		if (accountPost.mediaType() == 8) {
 			return accountPost.posts().stream().map(this::parseSingleMediaUrl).toList();
@@ -21,8 +21,8 @@ public class IGParserService {
 
 	private MediaUrl parseSingleMediaUrl(AccountPost accountPost) {
 		return switch (accountPost.mediaType()) {
-			case 1 -> new PhotoUrl(accountPost.singlePhotoUrl());
-			case 2 -> new VideoUrl(accountPost.singleVideoUrl());
+			case 1 -> new PhotoUrl(accountPost.singlePhotoUrl(), accountPost);
+			case 2 -> new VideoUrl(accountPost.singleVideoUrl(), accountPost);
 			default -> throw new IllegalStateException("Unexpected value: " + accountPost.mediaType());
 		};
 	}

@@ -29,7 +29,8 @@ public class Repo {
 						ats.ACCOUNT_ID,
 						ats.ACCOUNT_NICKNAME,
 						ats.ACCOUNT_TITLE,
-						ats.SCAN_INTERVAL
+						ats.SCAN_INTERVAL,
+						ats.FETCH_STORIES
 				)
 				.from(ats)
 				.where(ats.SCAN_INTERVAL.eq(interval))
@@ -49,7 +50,8 @@ public class Repo {
 						ats.ACCOUNT_ID,
 						ats.ACCOUNT_NICKNAME,
 						ats.ACCOUNT_TITLE,
-						ats.SCAN_INTERVAL
+						ats.SCAN_INTERVAL,
+						ats.FETCH_STORIES
 				)
 				.from(ats)
 				.where(ats.ACCOUNT_ID.eq(accountId))
@@ -57,13 +59,14 @@ public class Repo {
 				.orElseThrow(AccountToScanNotFoundException::new);
 	}
 
-	public void updateLastPostIdByAccount(Account account, String lastPostId) {
+	public void updateLastPostIdByAccount(Account account, String lastPostId, boolean isStory) {
 		db.insertInto(lp)
-				.columns(lp.SCAN_ACCOUNT_ID, lp.LAST_SEND_POST_ID)
-				.values(account.id(), lastPostId)
+				.columns(lp.SCAN_ACCOUNT_ID, lp.LAST_SEND_POST_ID, lp.IS_STORY)
+				.values(account.id(), lastPostId, isStory)
 				.onConflict(lp.SCAN_ACCOUNT_ID)
 				.doUpdate()
 				.set(lp.LAST_SEND_POST_ID, lastPostId)
+				.set(lp.IS_STORY, isStory)
 				.where(lp.SCAN_ACCOUNT_ID.eq(account.id()))
 				.execute();
 	}

@@ -7,8 +7,12 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record AccountPost(
+		@JsonProperty("pk")
 		String pk,
-		String code,
+		@JsonProperty("id")
+		String id,
+		@JsonProperty("code")
+		String urlCode,
 		@JsonProperty("media_type") // 1, 2, 8
 		int mediaType,
 		@JsonProperty("thumbnail_url")
@@ -16,6 +20,8 @@ public record AccountPost(
 		@JsonProperty("video_url")
 		String singleVideoUrl,
 		@JsonProperty("resources") // media_type = 8
-		List<AccountPost> posts
+		List<AccountPost> posts,
+		@JsonProperty("caption_text")
+		String text
 ) {
 }
