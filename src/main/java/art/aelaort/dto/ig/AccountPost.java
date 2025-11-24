@@ -2,6 +2,7 @@ package art.aelaort.dto.ig;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -24,4 +25,9 @@ public record AccountPost(
 		@JsonProperty("caption_text")
 		String text
 ) {
+	@NotNull
+	@Override
+	public String toString() {
+		return "AccountPost{pk='%s', id='%s', urlCode='%s', mediaType=%d, singlePhotoUrl='%s', singleVideoUrl='%s', postMedias=%s}".formatted(pk, id, urlCode, mediaType, singlePhotoUrl, singleVideoUrl, postMedias);
+	}
 }

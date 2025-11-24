@@ -34,14 +34,18 @@ public class Entry implements CommandLineRunner {
 			newPostsByAccount.stream()
 					.sorted(Comparator.comparing(AccountPost::id))
 					.forEach(post -> tgService.sendPost(post, account));
+			if (newPostsByAccount.isEmpty()) {
+				log.info("account: {} - 0 new posts", account.accountNickname());
+				continue;
+			}
 			log.info("account: {} - sent {} posts", account.accountNickname(), newPostsByAccount.size());
-			newPostsByAccount.forEach(post -> log.debug("account: {}, post: {}", account, post));
+			log.debug("account: {} - new posts: {}", account.accountNickname(), newPostsByAccount);
 
 			AccountPost lastPost = newPostsByAccount.stream()
 					.max(Comparator.comparing(AccountPost::id))
 					.orElseThrow();
 			repo.updateLastPostPkByAccount(account, lastPost);
-			log.info("account: {}, saved last post: {}", account, lastPost);
+			log.info("account: {}, saved last post: {}", account.accountNickname(), lastPost);
 		}
 	}
 }

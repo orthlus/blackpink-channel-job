@@ -26,7 +26,7 @@ public class IgApiService {
 		try {
 			lastPostId = repo.getLastPostPk(account);
 		} catch (LastPostOrStoryPkNotFoundException e) {
-			AccountPost accountPost = igRequestService.getPostsByAccount(account).getFirst();
+			AccountPost accountPost = igRequestService.getPostsByAccount(account).get(0);
 			return List.of(accountPost);
 		}
 
@@ -63,7 +63,7 @@ public class IgApiService {
 	}
 
 	private String getMinimalId(List<AccountPost> posts) {
-		AccountPost minimalPost = posts.getFirst();
+		AccountPost minimalPost = posts.get(0);
 		for (AccountPost post : posts) {
 			if (bi(post.pk()).compareTo(bi(minimalPost.pk())) < 0) {
 				minimalPost = post;

@@ -1,12 +1,15 @@
 package art.aelaort.config;
 
+import art.aelaort.exceptions.CustomTelegramTooManyRequestsException;
 import art.aelaort.telegram.client.TelegramClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.RestTemplate;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 import java.net.InetSocketAddress;
@@ -52,6 +55,33 @@ public class Config {
 		return TelegramClientBuilder.builder()
 				.token(token)
 				.telegramUrlSupplier(telegramUrlSupplier(telegramUrl))
+				.build();
+	}
+
+	@Bean
+	public RetryTemplate tgRetryTemplate() {
+		return RetryTemplate.builder()
+				.maxAttempts(120)
+				.fixedBackoff(50)
+				.retryOn(TelegramApiRequestException.class)
+				.build();
+	}
+
+	@Bean
+	public RetryTemplate tgApiRequestRetryTemplate() {
+		return RetryTemplate.builder()
+				.maxAttempts(120)
+				.fixedBackoff(50)
+				.retryOn(TelegramApiRequestException.class)
+				.build();
+	}
+
+	@Bean
+	public RetryTemplate tgApiTooManyRequestsRetryTemplate() {
+		return RetryTemplate.builder()
+				.maxAttempts(120)
+				.fixedBackoff(50)
+				.retryOn(CustomTelegramTooManyRequestsException.class)
 				.build();
 	}
 }

@@ -6,6 +6,7 @@ import art.aelaort.dto.ig.inner.VideoUrl;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class IgTgMapperService {
 	private final IgRequestService igRequestService;
 
-	public List<InputMedia> getInputMediaIS(List<MediaUrl> urls) {
+	public List<InputMedia> getInputMediaIS(List<? extends MediaUrl> urls) {
 		return urls.stream().map(this::getInputMediaIS).toList();
 	}
 
@@ -32,7 +33,7 @@ public class IgTgMapperService {
 		throw new IllegalArgumentException();
 	}
 
-	public List<InputMedia> getInputMediaLink(List<MediaUrl> urls) {
+	public List<InputMedia> getInputMediaLink(List<? extends MediaUrl> urls) {
 		return urls.stream().map(this::getInputMediaLink).toList();
 	}
 
@@ -46,7 +47,19 @@ public class IgTgMapperService {
 		throw new IllegalArgumentException();
 	}
 
-	public List<? extends List<? extends InputMedia>> mapIgToTgPosts(List<? extends InputMedia> inputMedias) {
+	public List<? extends List<? extends MediaUrl>> partitionIgUrls(List<? extends MediaUrl> mediaUrls) {
+		return Lists.partition(mediaUrls, 10);
+	}
+
+	public List<? extends List<? extends InputMedia>> partitionTgMedia(List<? extends InputMedia> inputMedias) {
 		return Lists.partition(inputMedias, 10);
+	}
+
+	public InputFile toInputFile(InputMedia inputMedia) {
+		if (inputMedia.getNewMediaStream() == null) {
+			return new InputFile(inputMedia.getMedia());
+		} else {
+			return new InputFile(inputMedia.getNewMediaStream(), inputMedia.getMediaName());
+		}
 	}
 }
